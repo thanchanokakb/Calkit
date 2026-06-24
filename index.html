@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Invoice Split Calculator</title>
+<title>CalKit — Invoice Split</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -16,59 +16,43 @@
   --bg:#f3f3fa;--card:#fff;
   --nh:52px;--sh:0 1px 3px rgba(0,0,0,.06);
   --r:12px;--rs:8px;--rx:5px;
-}
-@media (max-width:768px){
-  html{overflow:auto}
-  body{overflow-y:auto;overflow-x:hidden;min-width:0;padding-bottom:1.5rem}
-  .nav{min-width:0;padding:0 1rem}
-  .nav-title{font-size:13px}
-  .ni.off{display:none}
-  .layout{grid-template-columns:1fr;height:auto;overflow:visible;min-width:0}
-  .lp{overflow:visible;padding:1rem 1rem 1.5rem}
-  .rp{border-left:none;border-top:1px solid var(--bd);height:auto;overflow:visible}
-  .rp-top{flex:none;overflow:visible;max-height:none}
-  .rp-bot{position:static}
-  .mc-toggle{display:flex}
-  .mc-collapsible{display:none}
-  .mc-collapsible.open{display:block}
-  .r2{grid-template-columns:1fr 1fr}
-  .mg{grid-template-columns:repeat(3,minmax(0,1fr))}
-  .fx-bar{flex-wrap:wrap;gap:5px}
-  .fx-inp{min-width:80px}
-  .fx-res{min-width:auto}
-}
-@media (min-width:769px){
-  html{overflow:hidden}
-  body{overflow-y:hidden}
-  .mc-toggle{display:none}
-  .mc-collapsible{display:flex;flex-direction:column;flex:1}
+  --it:#059669;--itl:#dcfce7;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html{height:100%}
-body{height:100%;font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t0);min-width:0}
+html,body{height:100%;font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t0)}
 
+/* ── Nav ── */
 .nav{position:fixed;top:0;left:0;right:0;z-index:300;height:var(--nh);background:rgba(255,255,255,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;padding:0 1.25rem}
 .nav-l{display:flex;align-items:center;gap:9px}
 .nav-logo{width:27px;height:27px;background:var(--a);border-radius:7px;display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0}
 .nav-logo svg{width:14px;height:14px}
 .nav-title{font-size:14px;font-weight:700;color:var(--t0);letter-spacing:-.2px}
 .nav-menu{display:flex;gap:2px}
-.ni{padding:5px 10px;border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;border:none;background:none;font-family:inherit;color:var(--t1);display:flex;align-items:center;gap:5px;white-space:nowrap}
-.ni.on{background:var(--al);color:var(--a)}.ni.off{opacity:.4;cursor:not-allowed}
-.stag{font-size:9px;font-weight:600;background:var(--bd);color:var(--t2);padding:1px 5px;border-radius:999px}
+.ni{padding:5px 10px;border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;border:none;background:none;font-family:inherit;color:var(--t1);display:flex;align-items:center;gap:5px;white-space:nowrap;transition:background .12s,color .12s}
+.ni.on{background:var(--al);color:var(--a)}
+.ni.on-it{background:var(--itl);color:var(--it)}
 
-.layout{display:grid;grid-template-columns:60% 40%;height:calc(100vh - var(--nh));margin-top:var(--nh);overflow:hidden}
+/* ── Page switch ── */
+.page{display:none;margin-top:var(--nh)}
+.page.active{display:grid}
+
+/* ── Shared layout ── */
+.two-col{grid-template-columns:60% 40%;height:calc(100vh - var(--nh));overflow:hidden}
 .lp{overflow-y:auto;overflow-x:hidden;padding:1.3rem 1.25rem 2.5rem 1.5rem;min-width:0}
 .rp{display:flex;flex-direction:column;border-left:1px solid var(--bd);background:var(--card);overflow:hidden;min-width:0}
-.rp-top{flex:1;overflow-y:auto;overflow-x:hidden;padding:.9rem;background:var(--card)}
+.rp-top{flex:1;overflow-y:auto;padding:.9rem}
 .rp-bot{flex-shrink:0;border-top:1px solid var(--bd);padding:.75rem .9rem;display:flex;flex-direction:column;gap:7px}
 
+/* ── Cards & common ── */
 .ph{margin-bottom:1.1rem}
-.badge{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--a);background:var(--al);border:1px solid rgba(99,102,241,.25);padding:4px 13px;border-radius:6px;margin-bottom:6px}
+.badge{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:4px 13px;border-radius:6px;margin-bottom:6px}
+.badge-inv{color:var(--a);background:var(--al);border:1px solid rgba(99,102,241,.25)}
+.badge-it{color:var(--it);background:var(--itl);border:1px solid rgba(5,150,105,.25)}
 .ph-sub{font-size:13px;color:var(--t1)}
 .card{background:var(--card);border:1px solid var(--bd);border-radius:var(--r);padding:.95rem 1.1rem;margin-bottom:.75rem;box-shadow:var(--sh)}
 .cl{font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--t2);margin-bottom:.75rem;display:flex;align-items:center;gap:5px}
-.cl .dot{width:5px;height:5px;border-radius:50%;background:var(--a)}
+.cl .dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.dot-inv{background:var(--a)}.dot-it{background:var(--it)}
 .hidden{display:none!important}
 .f{display:flex;flex-direction:column;gap:4px;margin-bottom:10px}
 .f label{font-size:12px;font-weight:500;color:var(--t1)}
@@ -81,44 +65,48 @@ select{width:100%;padding:6px 9px;font-size:12px;font-family:inherit;border:1px 
 select:focus{border-color:var(--bf)}
 .r2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .sep{height:1px;background:var(--bd);margin:10px 0}
+.footer{text-align:center;padding:.75rem 1rem;font-size:11px;color:var(--t2)}
 
+/* ── Search / History ── */
 .sw{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--bd);border-radius:var(--rs);padding:0 10px;margin-bottom:.7rem;transition:border-color .14s,box-shadow .14s}
 .sw:focus-within{border-color:var(--bf);box-shadow:0 0 0 3px rgba(99,102,241,.1)}
 .sw svg{width:13px;height:13px;color:var(--t2);flex-shrink:0}
 .sw input{flex:1;padding:8px 0;font-size:13px;font-family:inherit;border:none;outline:none;background:transparent;color:var(--t0)}
-.sw input::placeholder{color:var(--t2)}
 .hpanel{background:var(--card);border:1px solid var(--bd);border-radius:var(--r);overflow:hidden;margin-bottom:.7rem;box-shadow:0 4px 12px rgba(0,0,0,.09)}
-.hi{padding:8px 12px;cursor:pointer;border-bottom:1px solid var(--bd);transition:background .1s;font-size:13px}
+.hi{padding:8px 12px;cursor:pointer;border-bottom:1px solid var(--bd);font-size:13px;transition:background .1s}
 .hi:last-child{border-bottom:none}.hi:hover{background:var(--bg)}
 .hi-t{font-weight:500;margin-bottom:1px}.hi-m{color:var(--t2);font-size:11px}
 .he{padding:10px 12px;font-size:13px;color:var(--t2)}
 
+/* ── Toggle ── */
 .tog-row{display:flex;align-items:center;gap:9px;cursor:pointer;user-select:none}
 .tbox{width:32px;height:18px;border-radius:999px;background:var(--bd);position:relative;transition:background .18s;flex-shrink:0}
 .tbox.on{background:var(--a)}
 .tknob{width:14px;height:14px;border-radius:50%;background:#fff;position:absolute;top:2px;left:2px;transition:left .16s;box-shadow:0 1px 2px rgba(0,0,0,.2)}
 .tbox.on .tknob{left:16px}
 .tlbl{font-size:13px;font-weight:500}
-.cbox{background:var(--bg);border:1px solid var(--bd);border-radius:var(--rs);padding:7px 10px;font-size:13px;min-height:33px;font-weight:500}
+.ro{display:flex;align-items:center;gap:6px;font-size:12px;cursor:pointer;color:var(--t1)}
+.ro input{width:12px;height:12px;accent-color:var(--a)}
+.ro.sel{color:var(--t0);font-weight:500}
 .nthint{font-size:12px;color:var(--t1);background:var(--al);border-radius:var(--rx);padding:5px 9px;margin-top:6px}
 .nthint strong{color:var(--a)}
 
-/* OS Entries */
+/* ── OS Entries ── */
 .oe-list{display:flex;flex-direction:column;gap:7px;margin-top:10px}
 .oe{background:var(--bg);border:1px solid var(--bd);border-radius:var(--rs);padding:8px 10px}
 .oe-hd{display:flex;align-items:center;gap:6px;margin-bottom:7px;height:28px}
 .type-btn{font-size:11px;font-weight:500;padding:0 9px;height:26px;border-radius:5px;border:1px solid var(--bd);background:var(--card);color:var(--t1);cursor:pointer;font-family:inherit;transition:background .15s,color .15s,border-color .15s;flex-shrink:0}
 .type-btn.on{background:var(--a);color:#fff;border-color:var(--a)}
-.oe-field{width:100%;flex:1;padding:0 9px;height:26px;font-size:11px;font-family:inherit;border:1px solid var(--bd);border-radius:var(--rx);background:var(--card);color:var(--t0);outline:none;min-width:0;transition:border-color .14s}
+.oe-field{flex:1;height:26px;padding:0 8px;font-size:11px;font-family:inherit;border:1px solid var(--bd);border-radius:var(--rx);background:var(--card);color:var(--t0);outline:none;min-width:0;transition:border-color .14s}
 .oe-field:focus{border-color:var(--bf)}
 .oe-del{background:none;border:none;cursor:pointer;font-size:16px;color:var(--t2);margin-left:2px;line-height:1;padding:0;flex-shrink:0}
 .oe-del:hover{color:var(--er)}
-.oe-amt{width:100%;padding:6px 9px;font-size:12px;font-family:inherit;border:1px solid var(--bd);border-radius:var(--rx);background:var(--card);color:var(--t0);outline:none;transition:border-color .14s}
+.oe-amt{width:100%;padding:6px 9px;font-size:12px;font-family:inherit;border:1px solid var(--bd);border-radius:var(--rx);background:var(--card);color:var(--t0);outline:none;transition:border-color .14s;margin-bottom:6px}
 .oe-amt:focus{border-color:var(--bf)}
 .add-os-btn{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:500;color:var(--a);background:none;border:1px dashed rgba(99,102,241,.35);border-radius:var(--rs);cursor:pointer;padding:6px 10px;width:100%;justify-content:center;margin-top:7px;font-family:inherit}
 .add-os-btn:hover{background:var(--al)}
 
-/* Division slider — absolute mark positioning */
+/* ── Division slider ── */
 .dr{padding:8px 0;border-bottom:1px solid var(--bd)}.dr:last-child{border-bottom:none}
 .dr-top{display:flex;align-items:center;gap:8px}
 .dchk{width:15px;height:15px;accent-color:var(--a);cursor:pointer;flex-shrink:0}
@@ -134,7 +122,6 @@ input[type=range]::-webkit-slider-runnable-track{height:4px;border-radius:999px}
 input[type=range]::-moz-range-track{height:4px;background:#e2e8f0;border-radius:999px;border:none}
 input[type=range]::-moz-range-progress{height:4px;background:#6366f1;border-radius:999px}
 input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;border:none;background:#6366f1;cursor:pointer}
-/* Marks: absolute, centered on exact thumb position */
 .sl-marks{position:relative;height:17px;margin-top:2px}
 .sl-marks span{position:absolute;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;cursor:pointer;user-select:none}
 .sl-marks span.mhide{opacity:0;pointer-events:none}
@@ -145,32 +132,36 @@ input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;bor
 .sl-marks span.on i{color:var(--a);font-weight:600}
 .pe{width:44px!important;text-align:center;padding:4px 5px!important;font-size:12px!important}
 .psym{font-size:12px;color:var(--t1);flex-shrink:0}
-
 .add-btn{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:500;color:var(--a);background:none;border:none;cursor:pointer;padding:8px 0 2px;font-family:inherit}
 .add-btn:hover{opacity:.7}
 .pi{width:16px;height:16px;border-radius:50%;background:var(--al);display:flex;align-items:center;justify-content:center;font-size:12px;line-height:1;color:var(--a)}
 .ptot{font-size:12px;font-weight:600;text-align:right;margin-top:6px}
 .ptok{color:var(--ok)}.pterr{color:var(--er)}
-
 .ror{display:flex;flex-wrap:wrap;gap:5px}
 .ropt{display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer;padding:4px 10px;border:1px solid var(--bd);border-radius:999px;transition:all .12s;color:var(--t1);user-select:none}
 .ropt:has(input:checked){border-color:var(--a);background:var(--al);color:var(--a);font-weight:500}
 .ropt input{width:11px;height:11px;accent-color:var(--a)}
 
-.go-btn{width:100%;padding:10px;font-size:14px;font-weight:600;font-family:inherit;background:var(--a);color:#fff;border:none;border-radius:var(--rs);cursor:pointer;transition:background .12s,transform .1s;box-shadow:0 2px 10px rgba(99,102,241,.3);margin-bottom:.6rem}
-.go-btn:hover{background:var(--ad)}.go-btn:active{transform:scale(.99)}
-.footer{text-align:center;padding:.75rem 1rem;font-size:11px;color:var(--t2)}
+/* ── Buttons ── */
+.go-btn{width:100%;padding:10px;font-size:14px;font-weight:600;font-family:inherit;color:#fff;border:none;border-radius:var(--rs);cursor:pointer;transition:background .12s,transform .1s;margin-bottom:.6rem}
+.go-btn:active{transform:scale(.99)}
+.go-inv{background:var(--a);box-shadow:0 2px 10px rgba(99,102,241,.3)}.go-inv:hover{background:var(--ad)}
+.go-it{background:var(--it);box-shadow:0 2px 10px rgba(5,150,105,.3)}.go-it:hover{background:#047857}
+.it-go-btn{font-size:10px;font-weight:600;color:var(--it);background:var(--itl);border:1px solid rgba(5,150,105,.3);border-radius:999px;padding:3px 10px;cursor:pointer;font-family:inherit;transition:all .12s;margin-top:5px;display:inline-flex;align-items:center;gap:4px}
+.it-go-btn:hover{background:#bbf7d0}
 
-/* Right panel results */
+/* ── Right panel results ── */
 .rph{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;text-align:center;color:var(--t2);gap:7px;padding:1.5rem}
 .rph svg{width:28px;height:28px;opacity:.16}
 .rph p{font-size:11px;line-height:1.9}
-.rcl{font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--t2);margin-bottom:.65rem;display:flex;align-items:center;gap:5px}
+.rcl{font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;margin-bottom:.65rem;display:flex;align-items:center;gap:5px}
+.rcl-inv{color:#15803d}.rcl-it{color:var(--it)}
 .mg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;margin-bottom:.65rem}
 .met{border-radius:var(--rs);padding:.55rem .4rem;text-align:center;border:1px solid var(--bd)}
 .ml{font-size:9px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px}
 .mv{font-size:11px;font-weight:600}
-.met.acc{background:var(--al);border-color:rgba(99,102,241,.2)}.met.acc .mv{color:var(--a)}
+.met.acc-inv{background:var(--al);border-color:rgba(99,102,241,.2)}.met.acc-inv .mv{color:var(--a)}
+.met.acc-it{background:var(--itl);border-color:rgba(5,150,105,.2)}.met.acc-it .mv{color:var(--it)}
 .sub-hd{font-size:9px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
 .db-block{padding:6px 0;border-bottom:1px solid var(--bd)}.db-block:last-child{border-bottom:none}
 .db-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:3px}
@@ -186,14 +177,16 @@ input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;bor
 .cpb:hover{border-color:var(--a);color:var(--a);background:var(--al)}
 .cpb.done{border-color:var(--ok);color:var(--ok);background:var(--okb)}
 .gt{display:flex;justify-content:space-between;align-items:center;padding:6px 0 0;border-top:1.5px solid var(--bd);margin-top:4px}
-.gt-l{font-size:11px;font-weight:600}.gt-r{display:flex;align-items:baseline;gap:5px}.gt-v{font-size:12px;font-weight:700}
-.ok-b{display:inline-flex;align-items:center;gap:2px;font-size:9px;font-weight:600;padding:2px 6px;border-radius:999px;background:var(--okb);color:var(--ok)}
+.gt-l{font-size:11px;font-weight:600}
+.gt-r{display:flex;align-items:baseline;gap:5px}
+.gt-v{font-size:12px;font-weight:700}
+.ok-b{display:inline-flex;align-items:center;gap:2px;font-size:9px;font-weight:600;padding:2px 6px;border-radius:999px;background:#dcfce7;color:#15803d}
 .err-b{display:inline-flex;align-items:center;gap:2px;font-size:9px;font-weight:600;padding:2px 6px;border-radius:999px;background:var(--erb);color:var(--er)}
 .rnote{font-size:10px;color:var(--t1);margin-top:4px;padding:3px 7px;background:var(--bg);border-radius:var(--rx);border-left:2px solid var(--bd)}
 
-/* FX Converter in right panel */
+/* ── FX Bar ── */
 .fx-bar{display:flex;align-items:center;gap:6px;background:var(--bg);border:1px solid var(--bd);border-radius:var(--rs);padding:5px 8px}
-.fx-bar-lbl{font-size:10px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:.05em;white-space:nowrap}
+.fx-lbl{font-size:10px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:.05em;white-space:nowrap;margin-bottom:3px}
 .fx-inp{flex:1;min-width:0;padding:4px 7px!important;font-size:12px!important;border-radius:var(--rx)!important}
 .fx-eq{font-size:11px;color:var(--t2);flex-shrink:0}
 .fx-res{font-size:12px;font-weight:600;color:var(--a);white-space:nowrap;flex-shrink:0;min-width:60px;text-align:right}
@@ -201,7 +194,7 @@ input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;bor
 .fx-cpb:hover{border-color:var(--a);color:var(--a);background:var(--al)}
 .fx-cpb.done{border-color:var(--ok);color:var(--ok);background:var(--okb)}
 
-/* Calculator */
+/* ── Calculator ── */
 .calc-lbl{font-size:10px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px}
 .mc{background:#e8f0fe;border-radius:12px;overflow:hidden;border:1px solid #c7d8fb;flex:1;display:flex;flex-direction:column}
 .mc-disp{background:#fff;padding:7px 13px 4px;border-bottom:1px solid #dde9fd;text-align:right}
@@ -216,10 +209,134 @@ input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;bor
 .ck-o{background:#6366f1;color:#fff;font-weight:600}.ck-o:hover{background:#4f52d9}
 .ck-e{background:#3730a3;color:#fff;font-weight:600}.ck-e:hover{background:#312e81}
 .ck-wide{grid-column:span 2}
+.mc-toggle{display:none;font-size:11px;font-weight:500;color:var(--a);background:none;border:none;cursor:pointer;font-family:inherit;padding:0}
+.mc-collapsible{display:flex;flex-direction:column;flex:1}
+
+/* ── IT Job specific ── */
+.it-job-row{display:grid;grid-template-columns:18px 1fr 90px 20px;gap:7px;align-items:center;padding:7px 0;border-bottom:1px solid var(--bd)}
+.it-job-row:last-child{border-bottom:none}
+.it-inp{border:1px solid var(--bd);border-radius:var(--rx);padding:5px 8px;font-size:12px;font-family:inherit;background:var(--card);color:var(--t0);outline:none;width:100%;transition:border-color .14s}
+.it-inp:focus{border-color:var(--bf);box-shadow:0 0 0 2px rgba(99,102,241,.08)}
+.it-hrs{width:52px;text-align:right;border:1px solid var(--bd);border-radius:var(--rx);padding:5px 6px;font-size:12px;font-family:inherit;background:var(--card);color:var(--t0);outline:none;transition:border-color .14s}
+.it-hrs:focus{border-color:var(--bf)}
+
+/* ── User Manual — new style ── */
+.cover{text-align:center;padding:2.5rem 1rem 2rem;background:var(--card);border-radius:16px;margin-bottom:2rem;border:1px solid var(--bd);box-shadow:0 2px 12px rgba(0,0,0,.06)}
+.cover-logo{width:48px;height:48px;background:var(--a);border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto .85rem}
+.cover-logo svg{width:26px;height:26px;color:#fff}
+.cover h1{font-size:22px;font-weight:700;letter-spacing:-.4px;margin-bottom:.35rem}
+.cover .sub{font-size:13px;color:var(--t1);margin-bottom:1.25rem}
+.cover-badges{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.cbadge{font-size:11px;font-weight:600;padding:4px 12px;border-radius:999px;letter-spacing:.04em}
+.cbadge-inv{background:var(--al);color:var(--a);border:1px solid rgba(99,102,241,.25)}
+.cbadge-it{background:var(--itl);color:var(--it);border:1px solid rgba(5,150,105,.25)}
+.m-toc{background:var(--card);border:1px solid var(--bd);border-radius:var(--r);padding:1.25rem 1.5rem;margin-bottom:2rem}
+.m-toc h2{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--t2);margin-bottom:.85rem}
+.m-toc ol{padding-left:1.1rem;display:flex;flex-direction:column;gap:5px}
+.m-toc li{font-size:13px;color:var(--t1)}
+.m-toc a{color:var(--a);text-decoration:none;font-weight:500}
+.m-toc a:hover{text-decoration:underline}
+.m-toc .toc-sub{font-size:12px;color:var(--t2);margin-left:.4rem}
+.m-section{margin-bottom:2.5rem}
+.section-label{display:inline-flex;align-items:center;gap:7px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;padding:3px 11px;border-radius:999px;margin-bottom:.6rem}
+.sl-inv{background:var(--al);color:var(--a);border:1px solid rgba(99,102,241,.2)}
+.sl-it{background:var(--itl);color:var(--it);border:1px solid rgba(5,150,105,.2)}
+.sl-gen{background:#f1f5f9;color:#475569;border:1px solid #e2e8f0}
+h2.sec-title{font-size:19px;font-weight:700;letter-spacing:-.3px;margin-bottom:.35rem}
+.sec-desc{font-size:13px;color:var(--t1);margin-bottom:1.25rem;max-width:640px;line-height:1.65}
+.m-steps{display:flex;flex-direction:column;gap:.9rem;margin:1rem 0}
+.m-step{display:flex;gap:13px;align-items:flex-start}
+.m-step-num{width:24px;height:24px;border-radius:50%;background:var(--a);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.m-step-num.it{background:var(--it)}
+.m-step-body{flex:1}
+.m-step-title{font-size:13px;font-weight:600;margin-bottom:2px}
+.m-step-desc{font-size:12px;color:var(--t1);line-height:1.6}
+.m-tip{background:#fffbeb;border:1px solid #fde68a;border-left:3px solid #f59e0b;border-radius:var(--rs);padding:.7rem 1rem;margin:.85rem 0;font-size:13px;color:#78350f}
+.m-tip strong{color:#92400e}
+.m-note{background:var(--al);border:1px solid rgba(99,102,241,.2);border-left:3px solid var(--a);border-radius:var(--rs);padding:.7rem 1rem;margin:.85rem 0;font-size:13px;color:#3730a3}
+.m-warn{background:#fef2f2;border:1px solid #fecaca;border-left:3px solid #dc2626;border-radius:var(--rs);padding:.7rem 1rem;margin:.85rem 0;font-size:13px;color:#991b1b}
+.feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin:1rem 0}
+.feat{background:var(--card);border:1px solid var(--bd);border-radius:var(--rs);padding:.85rem}
+.feat-icon{font-size:18px;margin-bottom:.35rem}
+.feat-title{font-size:13px;font-weight:600;margin-bottom:.2rem}
+.feat-desc{font-size:12px;color:var(--t1);line-height:1.5}
+.m-table{width:100%;border-collapse:collapse;font-size:12px;margin:.85rem 0}
+.m-table th{background:var(--bg);padding:7px 11px;text-align:left;font-weight:600;border:1px solid var(--bd);color:var(--t1);font-size:10px;text-transform:uppercase;letter-spacing:.04em}
+.m-table td{padding:7px 11px;border:1px solid var(--bd);color:var(--t0);line-height:1.5}
+.m-table tr:hover td{background:#fafafa}
+.m-divider{height:1px;background:var(--bd);margin:2rem 0}
+.scenario{background:#f8faff;border:1px solid rgba(99,102,241,.2);border-radius:var(--r);padding:1.1rem;margin:1rem 0}
+.scenario-title{font-size:13px;font-weight:600;color:var(--a);margin-bottom:.65rem;display:flex;align-items:center;gap:6px}
+.scenario-row{display:flex;justify-content:space-between;font-size:12px;padding:4px 0;border-bottom:1px solid rgba(99,102,241,.08)}
+.scenario-row:last-child{border-bottom:none;font-weight:600;padding-top:7px}
+.pill{display:inline-block;font-size:11px;font-weight:600;padding:2px 9px;border-radius:999px}
+.pill-it{background:var(--itl);color:var(--it);border:1px solid rgba(5,150,105,.3)}
+/* ── User Manual ── */
+.ni.on-manual{background:#fef3c7;color:#b45309}
+.badge-manual{color:#b45309;background:#fef3c7;border:1px solid rgba(180,83,9,.25)}
+.dot-manual{background:#d97706}
+.page-manual{display:none;position:fixed;top:var(--nh);left:0;right:0;bottom:0;overflow-y:auto;padding:2rem 1.5rem 3rem;background:var(--bg)}
+.page-manual.active{display:block}
+.manual-wrap{max-width:820px;margin:0 auto}
+.manual-ph{margin-bottom:2rem}
+.manual-ph h1{font-size:20px;font-weight:700;color:var(--t0);margin-bottom:6px}
+.manual-ph p{font-size:13px;color:var(--t1);line-height:1.7}
+.manual-section{background:var(--card);border:1px solid var(--bd);border-radius:var(--r);padding:1.2rem 1.4rem;margin-bottom:1rem;box-shadow:var(--sh)}
+.manual-section h2{font-size:13px;font-weight:700;color:var(--t0);margin-bottom:.9rem;display:flex;align-items:center;gap:7px}
+.manual-section h2 .sec-icon{width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:12px}
+.sec-icon-inv{background:var(--al);color:var(--a)}
+.sec-icon-it{background:var(--itl);color:var(--it)}
+.sec-icon-fx{background:#fef3c7;color:#b45309}
+.sec-icon-tip{background:#f0fdf4;color:#15803d}
+.manual-step{display:flex;gap:11px;margin-bottom:.8rem}
+.manual-step:last-child{margin-bottom:0}
+.step-num{width:20px;height:20px;min-width:20px;border-radius:50%;background:var(--al);color:var(--a);font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.step-body{flex:1}
+.step-title{font-size:12px;font-weight:600;color:var(--t0);margin-bottom:2px}
+.step-desc{font-size:12px;color:var(--t1);line-height:1.65}
+.step-desc code{background:var(--bg);border:1px solid var(--bd);border-radius:3px;padding:1px 5px;font-size:11px;color:var(--a);font-family:monospace}
+.manual-tag{display:inline-block;font-size:10px;font-weight:600;padding:2px 7px;border-radius:999px;margin:2px 2px 2px 0;vertical-align:middle}
+.tag-req{background:var(--erb);color:var(--er)}
+.tag-opt{background:var(--ib);color:var(--ic)}
+.tag-auto{background:#f0fdf4;color:#15803d}
+.manual-divider{height:1px;background:var(--bd);margin:.85rem 0}
+.tip-box{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:var(--rs);padding:.65rem .9rem;display:flex;gap:8px;align-items:flex-start;margin-top:.75rem}
+.tip-box .tip-icon{font-size:14px;flex-shrink:0;line-height:1.4}
+.tip-box p{font-size:12px;color:#166534;line-height:1.6}
+.warn-box{background:#fef3c7;border:1px solid #fde68a;border-radius:var(--rs);padding:.65rem .9rem;display:flex;gap:8px;align-items:flex-start;margin-top:.75rem}
+.warn-box p{font-size:12px;color:#92400e;line-height:1.6}
+.manual-toc{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:1.5rem}
+.toc-btn{font-size:11px;font-weight:500;padding:5px 12px;border-radius:999px;border:1px solid var(--bd);background:var(--card);color:var(--t1);cursor:pointer;font-family:inherit;transition:all .12s}
+.toc-btn:hover{border-color:var(--a);color:var(--a);background:var(--al)}
+.kbd{display:inline-block;background:var(--bg);border:1px solid var(--bd);border-bottom:2px solid #cbd5e1;border-radius:4px;padding:1px 6px;font-size:10px;font-family:monospace;color:var(--t0);margin:0 1px}
+.field-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:.5rem}
+.field-table th{text-align:left;padding:5px 8px;font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--t2);border-bottom:1px solid var(--bd)}
+.field-table td{padding:6px 8px;border-bottom:1px solid var(--bg);vertical-align:top;color:var(--t1);line-height:1.5}
+.field-table td:first-child{font-weight:600;color:var(--t0);white-space:nowrap}
+.field-table tr:last-child td{border-bottom:none}
+
+@media(max-width:768px){
+  body{overflow-x:hidden;overflow-y:auto}
+  .page.active{display:block}
+  .two-col{height:auto;overflow:visible}
+  .lp,.rp{overflow:visible}
+  .rp{border-left:none;border-top:1px solid var(--bd)}
+  .rp-top,.rp-bot{overflow:visible}
+  .mc-toggle{display:inline-block}
+  .mc-collapsible{display:none}
+  .mc-collapsible.open{display:flex;flex-direction:column}
+  .nav{padding:0 1rem}
+  .nav-title{font-size:13px}
+  .lp{padding:1rem 1rem 1.5rem}
+}
+@media(min-width:769px){
+  html,body{overflow:hidden}
+}
 </style>
 </head>
 <body>
 
+<!-- ── Navbar ── -->
 <nav class="nav">
   <div class="nav-l">
     <div class="nav-logo">
@@ -238,35 +355,42 @@ input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;bor
     <span class="nav-title">CalKit</span>
   </div>
   <div class="nav-menu">
-    <button class="ni on">Invoice Calculator</button>
-    <button class="ni off">Server Fee Calculator <span class="stag">Soon</span></button>
+    <button class="ni" id="nav-manual" onclick="showPage('manual')">User Manual</button>
+    <button class="ni on" id="nav-inv" onclick="showPage('inv')">Invoice Calculator</button>
+    <button class="ni" id="nav-it" onclick="showPage('it')">IT Job Costs</button>
   </div>
 </nav>
 
-<div class="layout">
-  <!-- LEFT -->
+<!-- ══════════════════════════════════════
+     PAGE 1 — Invoice Split Calculator
+════════════════════════════════════════ -->
+<div id="page-inv" class="page active two-col">
+  <!-- LEFT: form -->
   <div class="lp">
     <div class="ph">
-      <div class="badge">Invoice Split Calculator</div>
+      <div class="badge badge-inv">Invoice Split Calculator</div>
       <p class="ph-sub">Calculate invoice splits per project across divisions</p>
     </div>
 
+    <!-- Search history -->
     <div class="sw">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
       <input type="text" id="hs" placeholder="Search project history (name / number)..." oninput="searchH()">
     </div>
     <div id="hp" class="hpanel hidden"></div>
 
+    <!-- Project Info -->
     <div class="card">
-      <div class="cl"><span class="dot"></span>Project Info</div>
+      <div class="cl"><span class="dot dot-inv"></span>Project Info</div>
       <div class="r2">
         <div class="f"><label>Project Name</label><input type="text" id="pname" placeholder="e.g. Kyocera Catalog Printing"></div>
         <div class="f"><label>Project No.</label><input type="text" id="pnum" placeholder="e.g. XX-XXXX"></div>
       </div>
     </div>
 
+    <!-- Sales & OS -->
     <div class="card">
-      <div class="cl"><span class="dot"></span>Sales Amount</div>
+      <div class="cl"><span class="dot dot-inv"></span>Sales Amount</div>
       <div class="f" style="margin-bottom:0">
         <label>Total Sales (THB) <span class="star">*</span></label>
         <input type="number" id="total" placeholder="0.00" min="0" step="0.01" oninput="onChg()">
@@ -286,23 +410,19 @@ input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;bor
       </div>
     </div>
 
+    <!-- Divisions -->
     <div class="card">
-      <div class="cl"><span class="dot"></span>Division & Split (%) <span class="star">*</span></div>
+      <div class="cl"><span class="dot dot-inv"></span>Division & Split (%) <span class="star">*</span></div>
       <div id="divlist"></div>
       <button class="add-btn" onclick="addDiv()"><span class="pi">+</span> Add division</button>
       <div class="ptot pterr" id="ptotal">Total: 0%</div>
     </div>
 
-    <div class="card hidden" id="osretcard">
-      <div class="cl"><span class="dot"></span>OS Return — Division receiving OS back</div>
-      <div class="ror" id="osretrow"><span style="font-size:12px;color:var(--t2)">— Enable a division first —</span></div>
-    </div>
-
-    <button class="go-btn" onclick="calculate()">Calculate & Verify →</button>
+    <button class="go-btn go-inv" onclick="calculate()">Calculate & Verify →</button>
     <div class="footer">Made by Thanchanok Assuchalitthee</div>
   </div>
 
-  <!-- RIGHT -->
+  <!-- RIGHT: results + calculator -->
   <div class="rp">
     <div class="rp-top">
       <div class="rph" id="rph">
@@ -310,45 +430,44 @@ input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;bor
         <p>Fill in the form and click<br><strong style="color:var(--a)">Calculate & Verify</strong><br>to see results here</p>
       </div>
       <div id="rpcontent" class="hidden">
-        <div class="rcl"><span style="width:5px;height:5px;border-radius:50%;background:var(--a);flex-shrink:0;display:inline-block"></span>Split Results & Recheck</div>
+        <div class="rcl rcl-inv">
+          <span style="width:5px;height:5px;border-radius:50%;background:#15803d;flex-shrink:0;display:inline-block"></span>
+          Split Results & Recheck
+        </div>
         <div class="mg">
           <div class="met"><div class="ml">Total Sales</div><div class="mv" id="rtotal">—</div></div>
           <div class="met"><div class="ml">OS Deducted</div><div class="mv" id="ros">—</div></div>
-          <div class="met acc"><div class="ml">Net Amount</div><div class="mv" id="rnet">—</div></div>
+          <div class="met acc-inv"><div class="ml">Net Amount</div><div class="mv" id="rnet">—</div></div>
         </div>
         <div class="sub-hd">Per Division</div>
         <div id="rbreakdown"></div>
-        <div class="gt"><span class="gt-l">Grand Total</span><div class="gt-r"><span class="gt-v" id="rgtv">—</span><span id="rstatus"></span></div></div>
+        <div class="gt">
+          <span class="gt-l">Grand Total</span>
+          <div class="gt-r"><span class="gt-v" id="rgtv">—</span><span id="rstatus"></span></div>
+        </div>
         <div id="rnote" class="rnote hidden"></div>
       </div>
     </div>
-
-    <!-- Bottom: FX converter + Calculator -->
     <div class="rp-bot">
-      <!-- FX Converter -->
-      <div style="font-size:10px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:-3px">FX Converter — Foreign currency to THB</div>
-      <div class="fx-bar">
-        <span class="fx-bar-lbl">FX</span>
-        <input type="number" class="fx-inp" id="fxa" placeholder="Amount" min="0" step="0.01" oninput="calcFXBar()">
-        <span class="fx-eq">×</span>
-        <input type="number" class="fx-inp" id="fxr" placeholder="Rate" min="0" step="0.01" oninput="calcFXBar()">
-        <span class="fx-eq">=</span>
-        <span class="fx-res" id="fxres">—</span>
-        <button class="fx-cpb" id="fxcpb" onclick="copyFX()">Copy</button>
-      </div>
-
-      <!-- Calculator -->
       <div>
+        <div class="fx-lbl">FX Converter — Foreign currency to THB</div>
+        <div class="fx-bar">
+          <input type="number" class="fx-inp" id="fxa" placeholder="Amount" min="0" step="0.01" oninput="calcFXBar()">
+          <span class="fx-eq">×</span>
+          <input type="number" class="fx-inp" id="fxr" placeholder="Rate" min="0" step="0.01" oninput="calcFXBar()">
+          <span class="fx-eq">=</span>
+          <span class="fx-res" id="fxres">—</span>
+          <button class="fx-cpb" id="fxcpb" onclick="copyFX()">Copy</button>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;flex:1;min-height:0">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px">
           <div class="calc-lbl" style="margin-bottom:0">Calculator</div>
-          <button class="mc-toggle" onclick="toggleCalc()" id="mc-tog-btn" style="font-size:11px;font-weight:500;color:var(--a);background:none;border:none;cursor:pointer;font-family:inherit;padding:0">Show ▾</button>
+          <button class="mc-toggle" onclick="toggleCalc()" id="mc-tog-btn">Show ▾</button>
         </div>
         <div class="mc-collapsible open" id="mc-collapsible">
           <div class="mc">
-            <div class="mc-disp">
-              <div class="mc-expr" id="ce"></div>
-              <div class="mc-val" id="cv">0</div>
-            </div>
+            <div class="mc-disp"><div class="mc-expr" id="ce"></div><div class="mc-val" id="cv">0</div></div>
             <div class="mc-grid">
               <button class="ck ck-c" onclick="cAC()">AC</button>
               <button class="ck ck-f" onclick="cSign()">+/−</button>
@@ -377,7 +496,365 @@ input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;bor
   </div>
 </div>
 
+<!-- ══════════════════════════════════════
+     PAGE 2 — IT Job Costs
+════════════════════════════════════════ -->
+<div id="page-it" class="page two-col">
+  <!-- LEFT -->
+  <div class="lp">
+    <div class="ph">
+      <div class="badge badge-it">IT Job Costs</div>
+      <p class="ph-sub">Split IT amount proportionally by hours worked per job</p>
+    </div>
+
+    <div class="card">
+      <div class="cl"><span class="dot dot-it"></span>IT Division Amount</div>
+      <div class="f" style="margin-bottom:0">
+        <label>Total IT Amount (THB) <span class="star">*</span></label>
+        <input type="number" id="it-total" placeholder="0.00" min="0" step="0.01" oninput="calcIT()" onblur="roundITTotal()">
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="cl"><span class="dot dot-it"></span>Job Items & Hours</div>
+      <div id="it-job-list"></div>
+      <button class="add-btn" onclick="addITJob()">
+        <span class="pi" style="background:var(--itl);color:var(--it)">+</span> Add job item
+      </button>
+      <div id="it-hrs-total" style="font-size:12px;font-weight:600;text-align:right;margin-top:6px;color:var(--t2)">Total: 0 hrs</div>
+    </div>
+
+    <button class="go-btn go-it" onclick="showPage('inv')">← Back to Invoice Split</button>
+    <div class="footer">Made by Thanchanok Assuchalitthee</div>
+  </div>
+
+  <!-- RIGHT -->
+  <div class="rp">
+    <div class="rp-top">
+      <div class="rph" id="it-rph">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 7H6a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3"/><rect x="9" y="3" width="6" height="8" rx="1"/><path d="M9 12h6M9 16h4"/></svg>
+        <p>Enter IT amount and<br>add job items to see breakdown</p>
+      </div>
+      <div id="it-results" class="hidden">
+        <div class="rcl rcl-it">
+          <span style="width:5px;height:5px;border-radius:50%;background:var(--it);flex-shrink:0;display:inline-block"></span>
+          Job Cost Breakdown
+        </div>
+        <div class="mg">
+          <div class="met"><div class="ml">IT Amount</div><div class="mv" id="it-r-total">—</div></div>
+          <div class="met"><div class="ml">Total Hours</div><div class="mv" id="it-r-hours">—</div></div>
+          <div class="met acc-it"><div class="ml">Rate / hr</div><div class="mv" id="it-r-rate">—</div></div>
+        </div>
+        <div class="sub-hd">Per Job Item</div>
+        <div id="it-breakdown"></div>
+        <div class="gt">
+          <span class="gt-l">Grand Total</span>
+          <div class="gt-r"><span class="gt-v" id="it-gtv">—</span><span id="it-gstatus"></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PAGE 3 — User Manual
+════════════════════════════════════════ -->
+<div id="page-manual" class="page-manual">
+  <div class="manual-wrap">
+
+    <!-- Cover -->
+    <div class="cover">
+      <div class="cover-logo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/>
+          <circle cx="8" cy="11" r=".9" fill="currentColor" stroke="none"/>
+          <circle cx="12" cy="11" r=".9" fill="currentColor" stroke="none"/>
+          <circle cx="16" cy="11" r=".9" fill="currentColor" stroke="none"/>
+          <circle cx="8" cy="15" r=".9" fill="currentColor" stroke="none"/>
+          <circle cx="12" cy="15" r=".9" fill="currentColor" stroke="none"/>
+          <circle cx="16" cy="15" r=".9" fill="currentColor" stroke="none"/>
+          <circle cx="8" cy="19" r=".9" fill="currentColor" stroke="none"/>
+          <circle cx="12" cy="19" r=".9" fill="currentColor" stroke="none"/>
+        </svg>
+      </div>
+      <h1>CalKit — User Manual</h1>
+      <p class="sub">Invoice Split Calculator &amp; IT Job Costs — Complete Guide</p>
+      <div class="cover-badges">
+        <span class="cbadge cbadge-inv">Invoice Calculator</span>
+        <span class="cbadge cbadge-it">IT Job Costs</span>
+      </div>
+    </div>
+
+    <!-- TOC -->
+    <div class="m-toc">
+      <h2>Table of Contents</h2>
+      <ol>
+        <li><a href="#m-overview" onclick="scrollManual('m-overview')">Tool Overview</a> + <a href="#m-nav" onclick="scrollManual('m-nav')">Navigation</a></li>
+        <li><strong><a href="#m-invoice" onclick="scrollManual('m-invoice')">Invoice Split Calculator</a></strong>
+          <span class="toc-sub">— Project Info · Sales · Managing OS Price · Division · Results</span><br>
+          <span class="toc-sub" style="margin-left:0">Supporting tools: <a href="#m-fx" onclick="scrollManual('m-fx')">FX Converter &amp; Calculator</a> · <a href="#m-history" onclick="scrollManual('m-history')">Calculation History</a></span>
+        </li>
+        <li><strong><a href="#m-itjobs" onclick="scrollManual('m-itjobs')">IT Job Costs</a></strong>
+          <span class="toc-sub">— Job Items · Calculation · Copy</span></li>
+        <li><a href="#m-tips" onclick="scrollManual('m-tips')">Tips &amp; Best Practices</a></li>
+      </ol>
+    </div>
+
+    <!-- 1. Overview + Navigation -->
+    <div class="m-section" id="m-overview">
+      <div class="section-label sl-gen">1 — Overview</div>
+      <h2 class="sec-title">What is CalKit?</h2>
+      <p class="sec-desc">CalKit is a browser-based financial tool for teams. It calculates invoice splits across divisions and breaks down IT division costs by hours worked per job — no installation required.</p>
+      <div class="feat-grid">
+        <div class="feat"><div class="feat-icon">🧾</div><div class="feat-title">Invoice Split</div><div class="feat-desc">Split total sales by division percentage, with OS cost deduction before splitting.</div></div>
+        <div class="feat"><div class="feat-icon">⚙️</div><div class="feat-title">IT Job Costs</div><div class="feat-desc">Distribute the IT division's amount proportionally across job items by hours.</div></div>
+        <div class="feat"><div class="feat-icon">💱</div><div class="feat-title">FX Converter</div><div class="feat-desc">Convert foreign currency to THB — useful for entering overseas OS costs.</div></div>
+        <div class="feat"><div class="feat-icon">🧮</div><div class="feat-title">Calculator</div><div class="feat-desc">Built-in calculator. Supports keyboard input when no text field is focused.</div></div>
+        <div class="feat"><div class="feat-icon">🕐</div><div class="feat-title">History</div><div class="feat-desc">Every calculation is saved in-session. Search and reload any past project.</div></div>
+        <div class="feat"><div class="feat-icon">📋</div><div class="feat-title">Copy Anywhere</div><div class="feat-desc">Copy any amount or job title with one click — paste directly into Excel or other systems.</div></div>
+      </div>
+
+      <div id="m-nav" style="margin-top:1.75rem">
+        <h3 style="font-size:16px;font-weight:700;letter-spacing:-.2px;margin-bottom:.35rem">Navigation</h3>
+        <p class="sec-desc" style="margin-bottom:.85rem">CalKit has three menus in the top navbar. Switching pages does not clear any data you have entered.</p>
+        <table class="m-table">
+          <tr><th>Menu</th><th>Purpose</th></tr>
+          <tr><td><strong>User Manual</strong></td><td>This page — complete reference guide for all features</td></tr>
+          <tr><td><strong>Invoice Calculator</strong> (purple)</td><td>Calculate and split invoice amounts across divisions</td></tr>
+          <tr><td><strong>IT Job Costs</strong> (green)</td><td>Break down the IT division's amount by job hours</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="m-divider"></div>
+
+    <!-- 2. Invoice Split Calculator -->
+    <div class="m-section" id="m-invoice">
+      <div class="section-label sl-inv">2 — Invoice Calculator</div>
+      <h2 class="sec-title">Invoice Split Calculator</h2>
+      <p class="sec-desc">Fill in the left panel from top to bottom, then click <strong>Calculate &amp; Verify</strong>. Results appear instantly on the right.</p>
+
+      <h3 style="font-size:14px;font-weight:600;margin:1.25rem 0 .4rem">2.1 — Project Info</h3>
+      <p style="font-size:13px;color:var(--t1);margin-bottom:.85rem">Optional fields used for reference and history search.</p>
+      <table class="m-table">
+        <tr><th>Field</th><th>Description</th><th>Example</th></tr>
+        <tr><td>Project Name</td><td>Name of the project (optional)</td><td>Kyocera Catalog Printing</td></tr>
+        <tr><td>Project No.</td><td>Project reference number (optional)</td><td>T26-0001</td></tr>
+      </table>
+
+      <h3 style="font-size:14px;font-weight:600;margin:1.25rem 0 .4rem">2.2 — Sales Amount</h3>
+      <p style="font-size:13px;color:var(--t1);margin-bottom:.85rem">Enter the total sales figure from the Quotation in THB. <strong>Required.</strong></p>
+
+      <h3 style="font-size:14px;font-weight:600;margin:1.25rem 0 .4rem">2.3 — Managing OS Price</h3>
+      <p style="font-size:13px;color:var(--t1);margin-bottom:.85rem">OS Price is a cost deducted from total sales before the percentage split is applied. After splitting, the OS amount is returned to the designated division.</p>
+      <div class="m-steps">
+        <div class="m-step">
+          <div class="m-step-num">1</div>
+          <div class="m-step-body">
+            <div class="m-step-title">Enable the "Has OS Price?" toggle</div>
+            <div class="m-step-desc">The system automatically creates the first OS entry when you turn this on.</div>
+          </div>
+        </div>
+        <div class="m-step">
+          <div class="m-step-num">2</div>
+          <div class="m-step-body">
+            <div class="m-step-title">Select OS type: External or Internal</div>
+            <div class="m-step-desc">
+              <strong>External</strong> — Cost from an outside vendor or supplier. Add an optional name (e.g. "Vendor A").<br>
+              <strong>Internal</strong> — Cost attributed to an internal division (e.g. DMD handled the work). Select the division from the dropdown.
+            </div>
+          </div>
+        </div>
+        <div class="m-step">
+          <div class="m-step-num">3</div>
+          <div class="m-step-body">
+            <div class="m-step-title">Enter the OS Amount (THB)</div>
+            <div class="m-step-desc">Type the OS cost in Thai Baht. If the cost is in a foreign currency, use the FX Converter (right panel) to convert it first.</div>
+          </div>
+        </div>
+        <div class="m-step">
+          <div class="m-step-num">4</div>
+          <div class="m-step-body">
+            <div class="m-step-title">Select "Return to" division</div>
+            <div class="m-step-desc">Choose which division receives the OS amount back after the net split. Typically the division that managed or handled the OS cost.</div>
+          </div>
+        </div>
+      </div>
+      <div class="m-note">
+        <strong>Example — Internal OS Scenario:</strong><br>
+        POC project: Sales is the lead contact, TED assists, DMD's work is treated as an internal OS cost.<br>
+        → Select Internal OS → Division = DMD → Return to = Sales<br>
+        → System deducts DMD cost, splits remaining net 80:20 between Sales and TED, then adds DMD cost back to Sales.
+      </div>
+      <div class="scenario">
+        <div class="scenario-title">📊 Example Calculation with Internal OS</div>
+        <div class="scenario-row"><span>Total Sales</span><span>฿300,000.00</span></div>
+        <div class="scenario-row"><span>Internal OS (DMD) — deducted</span><span>−฿50,000.00</span></div>
+        <div class="scenario-row"><span>Net Amount for splitting</span><span>฿250,000.00</span></div>
+        <div class="scenario-row"><span>Sales 80% × ฿250,000</span><span>฿200,000.00</span></div>
+        <div class="scenario-row"><span>TED 20% × ฿250,000</span><span>฿50,000.00</span></div>
+        <div class="scenario-row"><span>Sales + OS Return (฿50,000)</span><span>฿250,000.00</span></div>
+        <div class="scenario-row"><span>Grand Total</span><span>฿300,000.00 ✓</span></div>
+      </div>
+      <div class="m-tip"><strong>💡 Multiple OS entries:</strong> Click "+ Add OS cost" to add as many entries as needed. Each entry has its own type, amount, and Return to selection — all deducted before the split and returned independently.</div>
+
+      <h3 style="font-size:14px;font-weight:600;margin:1.25rem 0 .4rem">2.4 — Division &amp; Split (%)</h3>
+      <p style="font-size:13px;color:var(--t1);margin-bottom:.85rem">Select the relevant divisions and set percentage splits. All active divisions must total exactly 100%.</p>
+      <div class="m-steps">
+        <div class="m-step">
+          <div class="m-step-num">1</div>
+          <div class="m-step-body">
+            <div class="m-step-title">Tick the divisions involved</div>
+            <div class="m-step-desc">Choose from DMD, Sales, IT Production, TED, TPM — or click "+ Add division" to add a custom one.</div>
+          </div>
+        </div>
+        <div class="m-step">
+          <div class="m-step-num">2</div>
+          <div class="m-step-body">
+            <div class="m-step-title">Set the percentage using the slider or number field</div>
+            <div class="m-step-desc">Drag the slider, click a tick mark (10%, 20%… 100%), or type any value such as 73 directly in the input field on the right.</div>
+          </div>
+        </div>
+        <div class="m-step">
+          <div class="m-step-num">3</div>
+          <div class="m-step-body">
+            <div class="m-step-title">Check the total indicator</div>
+            <div class="m-step-desc">The "Total: X%" label turns <span style="color:#dc2626;font-weight:600">red</span> if not 100 and <span style="color:#16a34a;font-weight:600">green</span> when ready to calculate.</div>
+          </div>
+        </div>
+      </div>
+      <div class="m-tip"><strong>💡 Tip:</strong> If the total % is not 100 when you click Calculate, a popup alert will warn you before any calculation runs.</div>
+
+      <h3 style="font-size:14px;font-weight:600;margin:1.25rem 0 .4rem">2.5 — Results: Split Results &amp; Recheck</h3>
+      <p style="font-size:13px;color:var(--t1);margin-bottom:.85rem">Click <strong>Calculate &amp; Verify →</strong> to run the calculation. Results appear on the right panel instantly.</p>
+      <table class="m-table">
+        <tr><th>Item</th><th>Description</th></tr>
+        <tr><td>Total Sales</td><td>The gross amount entered</td></tr>
+        <tr><td>OS Deducted</td><td>Total OS cost deducted before splitting (if any)</td></tr>
+        <tr><td>Net Amount</td><td>The net figure used to calculate each division's share</td></tr>
+        <tr><td>Per Division</td><td>Each division's final amount with detailed sub-lines</td></tr>
+        <tr><td>Grand Total + ✓</td><td>Sum of all division amounts — ✓ Correct confirms accuracy</td></tr>
+        <tr><td>Copy buttons</td><td>One-click copy for every individual amount</td></tr>
+      </table>
+
+      <h3 id="m-fx" style="font-size:14px;font-weight:600;margin:1.25rem 0 .4rem">2.6 — FX Converter &amp; Calculator</h3>
+      <p style="font-size:13px;color:var(--t1);margin-bottom:.75rem">Both tools are always available in the bottom-right panel on every page.</p>
+      <p style="font-size:13px;font-weight:600;color:var(--t0);margin-bottom:.4rem">FX Converter</p>
+      <p style="font-size:13px;color:var(--t1);margin-bottom:.75rem">Converts a foreign currency amount to Thai Baht for use in the OS Amount field.</p>
+      <div class="m-steps">
+        <div class="m-step"><div class="m-step-num">1</div><div class="m-step-body"><div class="m-step-title">Enter the foreign amount</div><div class="m-step-desc">Type the amount in the foreign currency (e.g. 5,000 USD).</div></div></div>
+        <div class="m-step"><div class="m-step-num">2</div><div class="m-step-body"><div class="m-step-title">Enter the exchange rate</div><div class="m-step-desc">Type how many THB one unit equals (e.g. 35.50).</div></div></div>
+        <div class="m-step"><div class="m-step-num">3</div><div class="m-step-body"><div class="m-step-title">Copy the result and paste into OS Amount</div><div class="m-step-desc">The THB result appears instantly. Click Copy, then paste it into the OS Amount field.</div></div></div>
+      </div>
+      <p style="font-size:13px;font-weight:600;color:var(--t0);margin:.85rem 0 .4rem">Calculator</p>
+      <p style="font-size:13px;color:var(--t1);margin-bottom:.75rem">A basic calculator supporting +, −, ×, ÷, %, and +/−.</p>
+      <table class="m-table">
+        <tr><th>Method</th><th>Description</th></tr>
+        <tr><td>Click on screen</td><td>Tap numbers and operators as normal</td></tr>
+        <tr><td>Keyboard input</td><td>Type numbers and operators when no input field is focused</td></tr>
+        <tr><td>Escape</td><td>Clear all (same as AC)</td></tr>
+        <tr><td>Backspace</td><td>Delete the last digit entered</td></tr>
+        <tr><td>Enter or =</td><td>Calculate the result</td></tr>
+      </table>
+
+      <h3 id="m-history" style="font-size:14px;font-weight:600;margin:1.25rem 0 .4rem">2.7 — Calculation History</h3>
+      <p style="font-size:13px;color:var(--t1);margin-bottom:.75rem">Every time you click Calculate &amp; Verify, the result is saved automatically in the current session. You can search for and reload any past calculation.</p>
+      <div class="m-steps">
+        <div class="m-step"><div class="m-step-num">1</div><div class="m-step-body"><div class="m-step-title">Type a project name or number in the search bar</div><div class="m-step-desc">Results filter in real-time as you type.</div></div></div>
+        <div class="m-step"><div class="m-step-num">2</div><div class="m-step-body"><div class="m-step-title">Click a result to reload it</div><div class="m-step-desc">All data (amounts, divisions, OS entries) are restored to the form instantly, ready to recalculate or review.</div></div></div>
+      </div>
+      <div class="m-warn"><strong>⚠️ Important:</strong> History is stored in memory only. It is permanently lost when you close or refresh the browser tab. Copy all required amounts before closing the page.</div>
+    </div>
+
+    <div class="m-divider"></div>
+
+    <!-- 3. IT Job Costs -->
+    <div class="m-section" id="m-itjobs">
+      <div class="section-label sl-it">3 — IT Job Costs</div>
+      <h2 class="sec-title">IT Job Costs Calculator</h2>
+      <p class="sec-desc">Use this page to distribute the IT division's invoice amount across job items, proportionally based on hours worked on each task.</p>
+      <div class="m-steps">
+        <div class="m-step">
+          <div class="m-step-num it">1</div>
+          <div class="m-step-body">
+            <div class="m-step-title">Go to IT Job Costs</div>
+            <div class="m-step-desc">Click <strong>IT Job Costs</strong> in the navbar — or click the <span class="pill pill-it">→ Break down IT job costs</span> button in the Invoice Summary. The IT amount is pre-filled automatically when using the button.</div>
+          </div>
+        </div>
+        <div class="m-step">
+          <div class="m-step-num it">2</div>
+          <div class="m-step-body">
+            <div class="m-step-title">Enter IT Division Amount</div>
+            <div class="m-step-desc">Type the total amount IT received (THB). If you arrived via the lead button, this is already filled in.</div>
+          </div>
+        </div>
+        <div class="m-step">
+          <div class="m-step-num it">3</div>
+          <div class="m-step-body">
+            <div class="m-step-title">Add job items</div>
+            <div class="m-step-desc">Click "+ Add job item" and enter the job title and hours for each task. The Total hrs counter updates live as you type.</div>
+          </div>
+        </div>
+        <div class="m-step">
+          <div class="m-step-num it">4</div>
+          <div class="m-step-body">
+            <div class="m-step-title">Review the breakdown on the right</div>
+            <div class="m-step-desc">The system instantly shows Rate/hr, each job's % of total hours, and its calculated cost. ✓ Correct confirms the total matches.</div>
+          </div>
+        </div>
+        <div class="m-step">
+          <div class="m-step-num it">5</div>
+          <div class="m-step-body">
+            <div class="m-step-title">Copy amounts or job titles</div>
+            <div class="m-step-desc">Use <strong>Copy ฿</strong> to copy a job's cost, or <strong>Copy title</strong> to copy the job name — paste directly into any report or system.</div>
+          </div>
+        </div>
+      </div>
+      <div class="scenario">
+        <div class="scenario-title">📊 Example — IT Job Cost Breakdown</div>
+        <div class="scenario-row"><span>IT Total Amount</span><span>฿207,071.90</span></div>
+        <div class="scenario-row"><span>Total Hours</span><span>97.8 hrs</span></div>
+        <div class="scenario-row"><span>Rate / hr</span><span>฿2,117.30</span></div>
+        <div class="scenario-row"><span>Admin Development (38.3 hrs · 39.2%)</span><span>฿81,092.77</span></div>
+        <div class="scenario-row"><span>Testing &amp; Deployment (22.5 hrs · 23.0%)</span><span>฿47,639.18</span></div>
+        <div class="scenario-row"><span>User Development (21 hrs · 21.5%)</span><span>฿44,463.37</span></div>
+        <div class="scenario-row"><span>Pre-Dev Preparation (3 hrs · 3.1%)</span><span>฿6,351.91</span></div>
+        <div class="scenario-row"><span>Modification (12 hrs · 12.3%)</span><span>฿25,407.64</span></div>
+        <div class="scenario-row"><span>Req. Checking (1 hr · 1.0%)</span><span>฿2,117.03</span></div>
+        <div class="scenario-row"><span>Grand Total</span><span>฿207,071.90 ✓</span></div>
+      </div>
+      <div class="m-tip"><strong>💡 Shortcut:</strong> In the Invoice Summary, clicking <span class="pill pill-it">→ Break down IT job costs</span> automatically carries the IT division's final amount to this page — no retyping needed.</div>
+    </div>
+
+    <div class="m-divider"></div>
+
+    <!-- 4. Tips -->
+    <div class="m-section" id="m-tips">
+      <div class="section-label sl-gen">4 — Tips &amp; Best Practices</div>
+      <h2 class="sec-title">Tips &amp; Best Practices</h2>
+      <div class="feat-grid">
+        <div class="feat"><div class="feat-icon">✅</div><div class="feat-title">Check % before calculating</div><div class="feat-desc">The Total % indicator must be green (100.0%) before clicking Calculate.</div></div>
+        <div class="feat"><div class="feat-icon">📋</div><div class="feat-title">Copy amounts before closing</div><div class="feat-desc">History is session-only. Copy all needed figures immediately after calculating.</div></div>
+        <div class="feat"><div class="feat-icon">💱</div><div class="feat-title">Convert FX before entering OS</div><div class="feat-desc">Use the FX Converter to get the THB value, then Copy and paste it into the OS Amount field.</div></div>
+        <div class="feat"><div class="feat-icon">🔗</div><div class="feat-title">Use the IT lead button</div><div class="feat-desc">The "→ Break down IT job costs" button in the summary carries the IT amount across automatically.</div></div>
+        <div class="feat"><div class="feat-icon">📱</div><div class="feat-title">Works on mobile</div><div class="feat-desc">Fully responsive. The calculator can be collapsed with the Show/Hide button to save space.</div></div>
+        <div class="feat"><div class="feat-icon">🔒</div><div class="feat-title">Data stays local</div><div class="feat-desc">All calculations run in your browser. No data is ever sent to any server.</div></div>
+      </div>
+      <div class="m-note" style="margin-top:1.25rem">
+        <strong>📌 Recommended Workflow:</strong><br>
+        1. Fill in Project Info (optional) → 2. Enter total sales → 3. Add OS entries if applicable → 4. Select divisions &amp; set % → 5. Click Calculate &amp; Verify → 6. Copy each division's amount → 7. Click the IT lead button if IT is involved → 8. Add job items with hours → 9. Copy job costs
+      </div>
+    </div>
+
+    <div style="text-align:center;padding:1.5rem 0 .5rem;font-size:12px;color:var(--t2)">
+      Made by Thanchanok Assuchalitthee &nbsp;·&nbsp; CalKit User Manual
+    </div>
+
+  </div>
+</div>
+
 <script>
+/* ══ Data ══ */
 const DEF=[
   {id:'dmd',name:'DMD',pct:0,active:false,del:false,cust:false},
   {id:'sales',name:'Sales',pct:0,active:false,del:false,cust:false},
@@ -385,30 +862,44 @@ const DEF=[
   {id:'ted',name:'TED',pct:0,active:false,del:false,cust:false},
   {id:'tpm',name:'TPM',pct:0,active:false,del:false,cust:false},
 ];
-// Fixed division list for Internal OS selection (always all 5)
-const FIXED_DIVS=[
-  {id:'dmd',name:'DMD'},{id:'sales',name:'Sales'},{id:'it',name:'IT Production'},
-  {id:'ted',name:'TED'},{id:'tpm',name:'TPM'}
-];
-let divs=DEF.map(d=>({...d})),cc=0,hist=[];
-let osEntries=[],oec=0;
+const FIXED_DIVS=[{id:'dmd',name:'DMD'},{id:'sales',name:'Sales'},{id:'it',name:'IT Production'},{id:'ted',name:'TED'},{id:'tpm',name:'TPM'}];
+let divs=DEF.map(d=>({...d})), cc=0, hist=[];
+let osEntries=[], oec=0;
+let itJobs=[], itjc=0;
 const fmt=n=>n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
-
-// Slider: thumb at value V (0-100) sits at:
-//   left = 7px + V/100 * (containerWidth - 14px)
-// We use inline style: left = calc(V/100 * (100% - 14px) + 7px)
-// transform: translateX(-50%) centers the mark on that point
-const slBg=v=>`linear-gradient(to right,#6366f1 ${v}%,#e2e8f0 ${v}%)`;
 const MARKS=[0,10,20,30,40,50,60,70,80,90,100];
-function marksHtml(idx,p){
-  return MARKS.map(v=>{
-    const leftCss=`calc(${v/100} * (100% - 14px) + 7px)`;
-    const cls=[v===0?'mhide':'',p===v?'on':''].filter(Boolean).join(' ');
-    return `<span class="${cls}" data-v="${v}" style="left:${leftCss}" onclick="applyPct(${idx},${v})"><i>${v===0?'&nbsp;':v}</i></span>`;
-  }).join('');
+const slBg=v=>`linear-gradient(to right,#6366f1 ${v}%,#e2e8f0 ${v}%)`;
+const mkL=v=>`calc(${v/100} * (100% - 14px) + 7px)`;
+const mksHtml=(i,p)=>MARKS.map(v=>`<span class="${v===0?'mhide':p===v?'on':''}" data-v="${v}" style="left:${mkL(v)}" onclick="applyPct(${i},${v})"><i>${v===0?'&nbsp;':v}</i></span>`).join('');
+
+/* ══ Page navigation ══ */
+function showPage(p){
+  // Handle two-col pages (inv, it)
+  ['inv','it'].forEach(id=>{
+    const el=document.getElementById('page-'+id);
+    const nb=document.getElementById('nav-'+id);
+    if(el)el.classList.toggle('active',id===p);
+    if(nb){nb.classList.remove('on','on-it');if(id===p)nb.classList.add(id==='it'?'on-it':'on');}
+  });
+  // Handle manual page
+  const manualEl=document.getElementById('page-manual');
+  const manualBtn=document.getElementById('nav-manual');
+  if(manualEl)manualEl.classList.toggle('active',p==='manual');
+  if(manualBtn){manualBtn.classList.remove('on-manual');if(p==='manual')manualBtn.classList.add('on-manual');}
+  // Scroll to top of manual page
+  if(p==='manual'){manualEl.scrollTop=0;window.scrollTo(0,0);}
 }
 
-/* ── FX Converter bar ── */
+function scrollManual(id){
+  const el=document.getElementById(id);
+  const panel=document.getElementById('page-manual');
+  if(el&&panel){
+    const top=el.getBoundingClientRect().top - panel.getBoundingClientRect().top + panel.scrollTop - 16;
+    panel.scrollTo({top:top,behavior:'smooth'});
+  }
+}
+
+
 let fxVal=0;
 function calcFXBar(){
   const a=parseFloat(document.getElementById('fxa').value)||0;
@@ -419,13 +910,10 @@ function calcFXBar(){
 function copyFX(){
   if(!fxVal)return;
   const btn=document.getElementById('fxcpb');
-  navigator.clipboard.writeText(fmt(fxVal)).then(()=>{
-    btn.textContent='✓';btn.classList.add('done');
-    setTimeout(()=>{btn.textContent='Copy';btn.classList.remove('done')},1800);
-  });
+  navigator.clipboard.writeText(fmt(fxVal)).then(()=>{btn.textContent='✓';btn.classList.add('done');setTimeout(()=>{btn.textContent='Copy';btn.classList.remove('done')},1800)});
 }
 
-/* ── OS entries ── */
+/* ══ OS entries ══ */
 function getOETHB(e){return e.amount||0}
 function getTotalOS(){
   if(!document.getElementById('ochk').checked)return 0;
@@ -436,23 +924,25 @@ function togOS(){
   const on=document.getElementById('ochk').checked;
   document.getElementById('otb').classList.toggle('on',on);
   document.getElementById('ossec').classList.toggle('hidden',!on);
-  document.getElementById('osretcard').classList.toggle('hidden',!on||!divs.some(d=>d.active));
   if(on&&!osEntries.length)addOE();
   onChg();
 }
 function addOE(){
   oec++;
-  osEntries.push({id:oec,type:'ext',divId:'dmd',amount:0});
+  osEntries.push({id:oec,type:'ext',divId:'dmd',amount:0,label:'',retTo:''});
   renderOEs();onChg();
 }
-function removeOE(id){osEntries=osEntries.filter(e=>e.id!==id);if(!osEntries.length)addOE();else{renderOEs();onChg();}}
+function removeOE(id){
+  osEntries=osEntries.filter(e=>e.id!==id);
+  if(!osEntries.length)addOE();else{renderOEs();onChg();}
+}
 function setOEType(id,t){const e=osEntries.find(x=>x.id===id);if(e)e.type=t;renderOEs()}
 function setOEDiv(id,v){const e=osEntries.find(x=>x.id===id);if(e)e.divId=v}
 function setOEAmt(id,v){const e=osEntries.find(x=>x.id===id);if(e)e.amount=parseFloat(v)||0;onChg()}
 function setOEName(id,v){const e=osEntries.find(x=>x.id===id);if(e)e.label=v.trim()}
+function setOERet(id,v){const e=osEntries.find(x=>x.id===id);if(e){e.retTo=v;renderOEs()}}
 
 function renderOEs(){
-  const divOpts=FIXED_DIVS.map(d=>`<option value="${d.id}">${d.name}</option>`).join('');
   document.getElementById('oelist').innerHTML=osEntries.map(e=>`
     <div class="oe">
       <div class="oe-hd">
@@ -460,10 +950,14 @@ function renderOEs(){
         <button class="type-btn${e.type==='int'?' on':''}" onclick="setOEType(${e.id},'int')">Internal</button>
         ${e.type==='int'
           ?`<select class="oe-field" style="padding:0 7px" onchange="setOEDiv(${e.id},this.value)">${FIXED_DIVS.map(d=>`<option value="${d.id}"${e.divId===d.id?' selected':''}>${d.name}</option>`).join('')}</select>`
-          :`<input type="text" class="oe-field" value="${e.label||''}" placeholder="Name (optional)" oninput="setOEName(${e.id},this.value)">`}
+          :`<input type="text" class="oe-field" value="${e.label.replace(/"/g,'&quot;')}" placeholder="Name (optional)" oninput="setOEName(${e.id},this.value)">`}
         <button class="oe-del" onclick="removeOE(${e.id})">×</button>
       </div>
       <input type="number" class="oe-amt" value="${e.amount||''}" placeholder="OS amount (THB)" min="0" step="0.01" oninput="setOEAmt(${e.id},this.value)">
+      <div style="margin-top:2px">
+        <div style="font-size:10px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">Return to</div>
+        <div class="ror">${FIXED_DIVS.map(d=>`<label class="ropt"><input type="radio" name="osret-${e.id}" value="${d.id}"${e.retTo===d.id?' checked':''} onchange="setOERet(${e.id},'${d.id}')"> ${d.name}</label>`).join('')}</div>
+      </div>
     </div>`).join('');
 }
 
@@ -471,39 +965,25 @@ function onChg(){
   const t=parseFloat(document.getElementById('total').value)||0;
   const osT=getTotalOS();
   const hint=document.getElementById('nethint');
-  if(osT>0&&t>0){
-    hint.classList.remove('hidden');
-    document.getElementById('ostotalv').textContent='฿'+fmt(osT);
-    document.getElementById('nethintv').textContent='฿'+fmt(t-osT);
-  }else hint.classList.add('hidden');
+  if(osT>0&&t>0){hint.classList.remove('hidden');document.getElementById('ostotalv').textContent='฿'+fmt(osT);document.getElementById('nethintv').textContent='฿'+fmt(t-osT);}
+  else hint.classList.add('hidden');
 }
 
-/* ── Divisions ── */
+/* ══ Divisions ══ */
 function renderDivs(){
   document.getElementById('divlist').innerHTML=divs.map((d,i)=>{
     const nameCell=d.cust
-      ?`<input type="text" value="${d.name}" placeholder="Division name" style="flex:1;border:1px solid var(--bd);border-radius:6px;padding:5px 8px;font-size:13px;font-weight:500;font-family:inherit;background:var(--card);color:var(--t0);outline:none;min-width:0" oninput="renDiv(${i},this.value)" onfocus="this.style.borderColor='var(--bf)'" onblur="this.style.borderColor='var(--bd)'">`
+      ?`<input type="text" value="${d.name.replace(/"/g,'&quot;')}" placeholder="Division name" style="flex:1;border:1px solid var(--bd);border-radius:6px;padding:5px 8px;font-size:13px;font-weight:500;font-family:inherit;background:var(--card);color:var(--t0);outline:none;min-width:0" oninput="renDiv(${i},this.value)" onfocus="this.style.borderColor='var(--bf)'" onblur="this.style.borderColor='var(--bd)'">`
       :`<span class="dname">${d.name}</span>`;
-    const ctrl=d.active?`<div class="dr-ctrl"><div class="sl-row"><div class="sl-wrap"><input type="range" min="0" max="100" step="1" value="${d.pct}" style="background:${slBg(d.pct)}" oninput="applyPct(${i},this.value)"><div class="sl-marks">${marksHtml(i,d.pct)}</div></div><input type="number" class="pe" min="0" max="100" value="${d.pct||''}" placeholder="—" oninput="applyPct(${i},this.value)"><span class="psym">%</span></div></div>`:'';
+    const ctrl=d.active?`<div class="dr-ctrl"><div class="sl-row"><div class="sl-wrap"><input type="range" min="0" max="100" step="1" value="${d.pct}" style="background:${slBg(d.pct)}" oninput="applyPct(${i},this.value)"><div class="sl-marks">${mksHtml(i,d.pct)}</div></div><input type="number" class="pe" min="0" max="100" value="${d.pct||''}" placeholder="—" oninput="applyPct(${i},this.value)"><span class="psym">%</span></div></div>`:'';
     return`<div class="dr"><div class="dr-top"><input type="checkbox" class="dchk" ${d.active?'checked':''} onchange="togDiv(${i},this.checked)">${nameCell}${d.del?`<button class="del-btn" onclick="rmDiv(${i})">×</button>`:''}</div>${ctrl}</div>`;
   }).join('');
-  updPct();renderOSRet();
-  const osOn=document.getElementById('ochk').checked;
-  document.getElementById('osretcard').classList.toggle('hidden',!osOn||!divs.some(d=>d.active));
+  updPct();
 }
 function togDiv(i,v){divs[i].active=v;if(!v)divs[i].pct=0;renderDivs()}
-function renDiv(i,v){divs[i].name=v||'';renderOSRet()}
+function renDiv(i,v){divs[i].name=v||''}
 function rmDiv(i){divs.splice(i,1);renderDivs()}
-function addDiv(){cc++;divs.push({id:'c'+cc,name:'',pct:0,active:true,del:true,cust:true});let calcOpen=true;
-function toggleCalc(){
-  calcOpen=!calcOpen;
-  const el=document.getElementById('mc-collapsible');
-  const btn=document.getElementById('mc-tog-btn');
-  el.classList.toggle('open',calcOpen);
-  btn.textContent=calcOpen?'Hide ▴':'Show ▾';
-}
-
-renderDivs();setTimeout(()=>{const ins=document.querySelectorAll('.dr-top input[type=text]');if(ins.length)ins[ins.length-1].focus()},50)}
+function addDiv(){cc++;divs.push({id:'c'+cc,name:'',pct:0,active:true,del:true,cust:true});renderDivs();setTimeout(()=>{const ins=document.querySelectorAll('.dr-top input[type=text]');if(ins.length)ins[ins.length-1].focus()},50)}
 
 function applyPct(i,raw){
   const val=Math.min(100,Math.max(0,parseInt(raw)||0));
@@ -522,14 +1002,8 @@ function updPct(){
   el.textContent='Total: '+sum.toFixed(1)+'%';
   el.className='ptot '+(Math.abs(sum-100)<0.01&&act.length?'ptok':'pterr');
 }
-function renderOSRet(){
-  const act=divs.filter(d=>d.active),c=document.getElementById('osretrow');
-  if(!act.length){c.innerHTML='<span style="font-size:12px;color:var(--t2)">— Enable a division first —</span>';return}
-  const prev=(document.querySelector('input[name=osret]:checked')||{}).value||null;
-  c.innerHTML=act.map(d=>`<label class="ropt"><input type="radio" name="osret" value="${d.id}"${prev===d.id?' checked':''}> ${d.name||'(unnamed)'}</label>`).join('');
-}
 
-/* ── Calculate ── */
+/* ══ Calculate (Invoice) ══ */
 function calculate(){
   const total=parseFloat(document.getElementById('total').value)||0;
   if(!total){alert('Please enter the total sales amount.');return}
@@ -538,64 +1012,56 @@ function calculate(){
   const psum=act.reduce((a,d)=>a+d.pct,0);
   if(Math.abs(psum-100)>0.01){alert('Division % must equal 100%.\nCurrent: '+psum.toFixed(1)+'%');return}
   const osOn=document.getElementById('ochk').checked;
+  if(osOn){
+    for(let idx=0;idx<osEntries.length;idx++){
+      const e=osEntries[idx];const n=idx+1;
+      const tag=e.type==='int'?`Internal OS #${n}`:`External OS${e.label?` (${e.label})`:` #${n}`}`;
+      if(!e.amount){alert(`⚠️ ${tag}\nPlease enter an OS amount.`);return}
+      if(!e.retTo){alert(`⚠️ ${tag}\nPlease select a "Return to" division.`);return}
+    }
+  }
   const osT=osOn?getTotalOS():0;
   const net=total-osT;
-  const osRetId=(document.querySelector('input[name=osret]:checked')||{}).value||null;
-
-  const res=act.map(d=>{
-    const split=net*(d.pct/100);
-    const osBack=osOn&&d.id===osRetId?osT:0;
-    return{...d,split,osBack,fin:split+osBack};
-  });
-
+  const retMap={};
+  if(osOn)osEntries.forEach(e=>{const a=getOETHB(e);if(a&&e.retTo)retMap[e.retTo]=(retMap[e.retTo]||0)+a});
+  const res=act.map(d=>{const split=net*(d.pct/100),osBack=retMap[d.id]||0;return{...d,split,osBack,fin:split+osBack}});
   const name=document.getElementById('pname').value.trim()||'—';
   const num=document.getElementById('pnum').value.trim()||'—';
   const now=new Date();
-  hist.unshift({name,num,date:now.toLocaleDateString('en-GB')+' '+now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}),total,osT,net,res,osRetId,osSnap:osEntries.map(e=>({...e}))});
-
+  hist.unshift({name,num,date:now.toLocaleDateString('en-GB')+' '+now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}),total,osT,net,res,osSnap:osEntries.map(e=>({...e}))});
   document.getElementById('rtotal').textContent='฿'+fmt(total);
   document.getElementById('ros').textContent=osT>0?'−฿'+fmt(osT):'—';
   document.getElementById('rnet').textContent='฿'+fmt(net);
-
   document.getElementById('rbreakdown').innerHTML=res.map(d=>{
     const hasOS=d.osBack>0;
     const lines=[{l:`Split — ${d.pct}% × ฿${fmt(net)}`,v:d.split}];
-    if(hasOS){
-      // show each OS entry as a subline
-      osEntries.forEach(e=>{
-        const amt=getOETHB(e);if(!amt)return;
-        let lbl='External OS';
-        if(e.type==='int'){
-          const dn=FIXED_DIVS.find(x=>x.id===e.divId);
-          lbl=`Internal OS (${dn?dn.name:e.divId})`;
-        } else if(e.label){
-          lbl=`External OS (${e.label})`;
-        }
-        lines.push({l:lbl,v:amt});
-      });
-    }
+    if(hasOS)osEntries.forEach(e=>{
+      const a=getOETHB(e);if(!a||e.retTo!==d.id)return;
+      const lbl=e.type==='int'?`Internal OS (${FIXED_DIVS.find(x=>x.id===e.divId)?.name||e.divId}) return`:`External OS${e.label?` (${e.label})`:''} return`;
+      lines.push({l:lbl,v:a});
+    });
     return`<div class="db-block">
       <div class="db-head">
         <span class="db-name">${d.name}${hasOS?'<span class="ost">OS management</span>':''}</span>
         <div class="db-right"><span class="db-amt">฿${fmt(d.fin)}</span><button class="cpb" onclick="cpv(this,'${fmt(d.fin)}')">Copy</button></div>
       </div>
       <div class="db-lines">${lines.map(ln=>`<div class="dl"><span>${ln.l}</span><div class="dl-r"><span class="dl-num">฿${fmt(ln.v)}</span><button class="cpb" onclick="cpv(this,'${fmt(ln.v)}')">Copy</button></div></div>`).join('')}</div>
+      ${d.id==='it'?`<button class="it-go-btn" onclick="goToITJobs(${d.fin})">→ Break down IT job costs</button>`:''}
     </div>`;
   }).join('');
-
   const sumAll=res.reduce((a,d)=>a+d.fin,0);
   document.getElementById('rgtv').textContent='฿'+fmt(sumAll);
   document.getElementById('rstatus').innerHTML=Math.abs(sumAll-total)<0.01?'<span class="ok-b">✓ Correct</span>':'<span class="err-b">! Mismatch</span>';
   const ne=document.getElementById('rnote');
-  if(osT>0&&osRetId){ne.textContent=`Net ฿${fmt(net)} + OS ฿${fmt(osT)} = ฿${fmt(total)}`;ne.classList.remove('hidden')}
-  else ne.classList.add('hidden');
+  if(osT>0){ne.textContent=`Net ฿${fmt(net)} + OS returns ฿${fmt(Object.values(retMap).reduce((a,v)=>a+v,0))} = ฿${fmt(sumAll)}`;ne.classList.remove('hidden')}else ne.classList.add('hidden');
   document.getElementById('rph').classList.add('hidden');
   document.getElementById('rpcontent').classList.remove('hidden');
-  document.querySelector('.rp-top').scrollTo({top:0,behavior:'smooth'});
+  document.querySelector('#page-inv .rp-top').scrollTo({top:0,behavior:'smooth'});
 }
+
 function cpv(btn,val){navigator.clipboard.writeText(val).then(()=>{btn.textContent='✓';btn.classList.add('done');setTimeout(()=>{btn.textContent='Copy';btn.classList.remove('done')},1800)})}
 
-/* ── History ── */
+/* ══ History ══ */
 function searchH(){
   const q=document.getElementById('hs').value.trim().toLowerCase(),p=document.getElementById('hp');
   if(!q){p.classList.add('hidden');return}
@@ -622,11 +1088,84 @@ function loadH(i){
   divs=DEF.map(d=>({...d,active:false,pct:0}));cc=0;
   h.res.forEach(r=>{const ex=divs.find(d=>d.id===r.id);if(ex){ex.active=true;ex.pct=r.pct}else{cc++;divs.push({id:r.id,name:r.name,pct:r.pct,active:true,del:true,cust:true})}});
   renderDivs();
-  setTimeout(()=>{if(h.osRetId){const el=document.querySelector(`input[name=osret][value="${h.osRetId}"]`);if(el)el.checked=true}},50);
   document.getElementById('hs').value='';document.getElementById('hp').classList.add('hidden');
 }
 
-/* ── Calculator ── */
+/* ══ IT Job Costs ══ */
+function addITJob(){
+  itjc++;
+  itJobs.push({id:itjc,name:'',hours:0});
+  renderITJobs();
+}
+function removeITJob(id){itJobs=itJobs.filter(j=>j.id!==id);renderITJobs()}
+function setITName(id,v){const j=itJobs.find(x=>x.id===id);if(j)j.name=v;calcIT()}
+function setITHours(id,v){const j=itJobs.find(x=>x.id===id);if(j)j.hours=parseFloat(v)||0;calcIT()}
+
+function renderITJobs(){
+  document.getElementById('it-job-list').innerHTML=itJobs.map((j,idx)=>`
+    <div class="it-job-row">
+      <span style="font-size:11px;color:var(--t2);font-weight:600">${idx+1}.</span>
+      <input type="text" class="it-inp" value="${j.name.replace(/"/g,'&quot;')}" placeholder="Job title" oninput="setITName(${j.id},this.value)">
+      <div style="display:flex;align-items:center;gap:4px">
+        <input type="number" class="it-hrs" value="${j.hours||''}" placeholder="0" min="0" step="0.1" oninput="setITHours(${j.id},this.value)">
+        <span style="font-size:11px;color:var(--t2)">hrs</span>
+      </div>
+      <button onclick="removeITJob(${j.id})" style="background:none;border:none;cursor:pointer;font-size:15px;color:var(--t2);padding:0;line-height:1">×</button>
+    </div>`).join('');
+  const th=itJobs.reduce((s,j)=>s+j.hours,0);
+  document.getElementById('it-hrs-total').textContent='Total: '+th.toFixed(1)+' hrs';
+  calcIT();
+}
+
+function roundITTotal(){
+  const el=document.getElementById('it-total');
+  const v=parseFloat(el.value);
+  if(!isNaN(v))el.value=v.toFixed(2);
+  calcIT();
+}
+function calcIT(){
+  const total=parseFloat(document.getElementById('it-total').value)||0;
+  const th=itJobs.reduce((s,j)=>s+j.hours,0);
+  document.getElementById('it-hrs-total').textContent='Total: '+th.toFixed(1)+' hrs';
+  const ph=document.getElementById('it-rph'),res=document.getElementById('it-results');
+  if(!total||!th||!itJobs.length){ph.classList.remove('hidden');res.classList.add('hidden');return}
+  ph.classList.add('hidden');res.classList.remove('hidden');
+  document.getElementById('it-r-total').textContent='฿'+fmt(total);
+  document.getElementById('it-r-hours').textContent=th.toFixed(1)+' hrs';
+  document.getElementById('it-r-rate').textContent='฿'+fmt(total/th);
+  const items=itJobs.map(j=>({...j,price:(j.hours/th)*total}));
+  document.getElementById('it-breakdown').innerHTML=items.map((j,idx)=>`
+    <div class="db-block">
+      <div class="db-head">
+        <div style="display:flex;align-items:baseline;gap:5px;min-width:0;flex:1">
+          <span style="font-size:10px;color:var(--t2);font-weight:600;flex-shrink:0">${idx+1}.</span>
+          <span class="db-name" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${j.name||'(unnamed)'}</span>
+        </div>
+        <div class="db-right">
+          <span style="font-size:12px;font-weight:700;color:var(--it)">฿${fmt(j.price)}</span>
+          <button class="cpb" onclick="cpv(this,'${fmt(j.price)}')">Copy ฿</button>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding-left:13px">
+        <span style="font-size:10px;color:var(--t1)">${j.hours} hrs · ${((j.hours/th)*100).toFixed(1)}%</span>
+        <button class="cpb" onclick='cpv(this,${JSON.stringify(j.name||"")})'  style="font-size:9px">Copy title</button>
+      </div>
+    </div>`).join('');
+  const sumAll=items.reduce((s,j)=>s+j.price,0);
+  document.getElementById('it-gtv').textContent='฿'+fmt(sumAll);
+  document.getElementById('it-gstatus').innerHTML=Math.abs(sumAll-total)<0.01
+    ?'<span class="ok-b">✓ Correct</span>'
+    :'<span class="err-b">! Mismatch</span>';
+}
+
+function goToITJobs(amount){
+  document.getElementById('it-total').value=(Math.round(amount*100)/100).toFixed(2);
+  showPage('it');
+  if(!itJobs.length)addITJob();
+  else calcIT();
+}
+
+/* ══ Calculator ══ */
 let cEx='',cCur='0',cOps='',cPrv=null,cEqd=false;
 const cD=()=>{let d=cCur;if(d.length>12)d=parseFloat(cCur).toPrecision(9);document.getElementById('cv').textContent=d;document.getElementById('ce').textContent=cEx};
 function cNum(n){if(cEqd){cCur='0';cEx='';cEqd=false}if(cCur==='0'&&n!=='.')cCur=n;else if(n==='.'&&cCur.includes('.'))return;else cCur+=n;cD()}
@@ -639,6 +1178,8 @@ function cAC(){cCur='0';cEx='';cOps='';cPrv=null;cEqd=false;cD()}
 function cSign(){cCur=f2(parseFloat(cCur)*-1);cD()}
 function cPct(){cCur=f2(parseFloat(cCur)/100);cD()}
 function cBk(){if(cEqd)return;cCur=cCur.length>1?cCur.slice(0,-1):'0';cD()}
+let calcOpen=true;
+function toggleCalc(){calcOpen=!calcOpen;const el=document.getElementById('mc-collapsible'),btn=document.getElementById('mc-tog-btn');el.classList.toggle('open',calcOpen);btn.textContent=calcOpen?'Hide ▴':'Show ▾'}
 
 document.addEventListener('keydown',e=>{
   if(['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName))return;
